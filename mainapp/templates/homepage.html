@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="color:navy;" class="text-center">
+    <h1>Hello {{user}}</h1>
+</div>
+<div class="container">
+<div class="row p-4 mx-auto">
+    <div class="col-lg-5 shadow p-0">
+    <div class="alert alert-success"><h2>Create your Todo</h2></div>
+    <div class="p-4">
+        <form method="POST" action="add-todo">
+            {% csrf_token %}
+          {{form.as_p}}
+            <br>
+        <input class="btn btn-primary" type="submit" value="add">
+    </form>
+
+    </div>
+</div>
+    <div class="col">
+        <div class="border">
+            {% if todo|length == 0 %}
+            <div class="p-4">
+                <div class="alert alert-info text-center">
+                    <p class="display-4"><h3>No Todos</h3></p>
+                </div>
+            </div>
+
+            {% else %}
+                <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for t in todo %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{t.title}}</td>
+                        <td>{% if t.status == 'C' %}
+                            ✔️Completed
+                            {% else %}
+                            ⏲️Pending
+                            {% endif %}</td>
+                        <td>{{t.priority}}</td>
+                        <td><a class="btn" href="delete-todo/{{t.id}}" title="Delete">🗑️</a>
+                            {% if t.status == 'P' %}
+                            <a class="btn" href="change-status/{{t.id}}/C" title="Mark-Completed">✔️</a>
+                            {% else %}
+                            <a class="btn" href="change-status/{{t.id}}/P" title="Pending">⏲️</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
